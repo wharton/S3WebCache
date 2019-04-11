@@ -13,11 +13,13 @@ These env variables are assumed to be set
 
 * AWS_ACCESS_KEY_ID
 * AWS_SECRET_ACCESS_KEY
+* AWS_DEFAULT_REGION
 
 ### Usage
 
 ```
 from s3webcache import S3WebCache
+
 s3wc  = S3WebCache(bucket_name='myBucket')   
 html = s3wc.get("https://en.wikipedia.org/wiki/Whole_Earth_Catalog")
 ```
