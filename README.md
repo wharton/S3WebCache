@@ -7,7 +7,14 @@ This is a simple package for archiving web pages (HTML) to S3. It acts as a cach
 
 `pip install s3webcache`
 
-## usage
+### Env variable
+
+These env variables are assumed to be set
+
+* AWS_ACCESS_KEY_ID
+* AWS_SECRET_ACCESS_KEY
+
+### Usage
 
 ```
 from s3webcache import S3WebCache

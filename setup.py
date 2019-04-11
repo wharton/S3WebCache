@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name='S3WebCache',
-    version='0.1.1',
+    version='0.1.2',
     packages=setuptools.find_packages(),
     license='MIT',
     author_email="zamechek@wharton.upenn.edu",
