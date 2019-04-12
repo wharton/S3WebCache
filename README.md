@@ -7,19 +7,19 @@ This is a simple package for archiving web pages (HTML) to S3. It acts as a cach
 
 `pip install s3webcache`
 
-### Env variable
-
-These env variables are assumed to be set
-
-* AWS_ACCESS_KEY_ID
-* AWS_SECRET_ACCESS_KEY
-* AWS_DEFAULT_REGION
-
 ### Usage
 
 ```
 from s3webcache import S3WebCache
 
-s3wc  = S3WebCache(bucket_name='myBucket')   
-html = s3wc.get("https://en.wikipedia.org/wiki/Whole_Earth_Catalog")
+s3wc = S3WebCache(
+    bucket_name=<BUCKET>,
+    aws_access_key_id=<AWS_ACCESS_KEY_ID>,
+    aws_secret_key=<AWS_SECRET_ACCESS_KEY>,
+    aws_default_region=<AWS_DEFAULT_REGION>)
+
+request = s3wc.get("https://en.wikipedia.org/wiki/Whole_Earth_Catalog")
+
+if request.success:
+    html = request.message
 ```

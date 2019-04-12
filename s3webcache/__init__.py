@@ -13,24 +13,33 @@ S3WebCacheRequest = namedtuple('Request', ["success", "message"])
 
 class S3WebCache(object):
 
-    def __init__(self, bucket_name: str, path_prefix: str = None, trim_website: bool = False, allow_forwarding: bool = False):
-        aws_key = os.getenv('AWS_ACCESS_KEY_ID', None)
-        if not aws_key:
+    def __init__(self, 
+        bucket_name: str, 
+        path_prefix: str = None, 
+        aws_access_key_id: str = None, 
+        aws_secret_key: str = None, 
+        aws_default_region: str = None, 
+        trim_website: bool = False, 
+        allow_forwarding: bool = False):
+
+        self.aws_access_key_id = os.getenv('AWS_ACCESS_KEY_ID', aws_access_key_id)
+        self.aws_secret_key = os.getenv(
+            'AWS_SECRET_ACCESS_KEY', aws_secret_key)
+        self.aws_default_region = os.getenv(
+            'AWS_DEFAULT_REGION', aws_default_region)
+
+        if not self.aws_access_key_id:
             raise Exception(
                 'Environment variable not found: AWS_ACCESS_KEY_ID')
-
-        aws_secret_key = os.getenv('AWS_SECRET_ACCESS_KEY', None)
-        if not aws_secret_key:
+        if not self.aws_secret_key:
             raise Exception(
                 'Environment variable not found: AWS_SECRET_ACCESS_KEY')
-
-        aws_default_region = os.getenv('AWS_DEFAULT_REGION', None)
-        if not aws_default_region:
+        if not self.aws_default_region:
             raise Exception(
                 'Environment variable not found: AWS_DEFAULT_REGION')
 
         self._s3_client = boto3.client(
-            's3', aws_access_key_id=aws_key, aws_secret_access_key=aws_secret_key, region_name=aws_default_region)
+            's3', aws_access_key_id=self.aws_access_key_id, aws_secret_access_key=self.aws_secret_key, region_name=self.aws_default_region)
 
         buckets = self._s3_client.list_buckets()['Buckets']
 
