@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/wharton/S3WebCache.svg?branch=master)](https://travis-ci.org/wharton/S3WebCache)
+
 # S3 Web Cache
 This is a simple package for archiving web pages (HTML) to S3. It acts as a cache serving the S3 version of the page if it exists. If not it writes a version to s3.
 
