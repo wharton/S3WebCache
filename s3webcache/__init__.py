@@ -20,7 +20,7 @@ class S3WebCache(object):
         aws_secret_key: str = None, 
         aws_default_region: str = None, 
         trim_website: bool = False, 
-        allow_forwarding: bool = False):
+        allow_forwarding: bool = True):
 
         self.aws_access_key_id = os.getenv('AWS_ACCESS_KEY_ID', aws_access_key_id)
         self.aws_secret_key = os.getenv(
