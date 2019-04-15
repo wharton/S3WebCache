@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/wharton/S3WebCache.svg?branch=master)](https://travis-ci.org/wharton/S3WebCache)
 [![PyPI version](https://badge.fury.io/py/S3WebCache.svg)](https://badge.fury.io/py/S3WebCache)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 # S3 Web Cache
 
