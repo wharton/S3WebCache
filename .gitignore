@@ -4,3 +4,5 @@ S3WebCache.egg-info
 config.creds.json
 __pycache__
 .python-version
+.pytest_cache/
+.vscode/

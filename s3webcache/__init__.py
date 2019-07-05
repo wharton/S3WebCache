@@ -115,7 +115,6 @@ class S3WebCache(object):
     def _get_from_s3(self, s3_url_tuple):
         try:
             key = f"{s3_url_tuple.path}?{s3_url_tuple.query}"
-            print(key)
             page_body = self._s3_client.get_object(
                 Bucket=self.bucket, Key=key
             ).decode()
@@ -129,12 +128,12 @@ class S3WebCache(object):
         r = requests.get(_url, allow_redirects=self.allow_forwarding)
 
         attempts = 0
-
+        print(r.__dict__)
         while r.status_code != 200 and attempts < 3:
             try:
                 r = requests.get(_url, allow_redirects=False)
             except Exception as err:
-                pass
+                print(err)
             finally:
                 attempts += 1
                 sleep(10 + (attempts * 10))
