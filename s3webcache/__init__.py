@@ -4,6 +4,7 @@ from botocore.exceptions import ClientError
 from time import sleep
 from collections import namedtuple
 from urllib.parse import urlparse, urlunparse
+from fake_useragent import UserAgent
 import posixpath
 import sys
 import os
@@ -13,14 +14,14 @@ S3WebCacheRequest = namedtuple("Request", ["success", "message"])
 
 class S3WebCache(object):
     def __init__(
-        self,
-        bucket_name: str,
-        path_prefix: str = None,
-        aws_access_key_id: str = None,
-        aws_secret_key: str = None,
-        aws_default_region: str = None,
-        trim_website: bool = False,
-        allow_forwarding: bool = True,
+            self,
+            bucket_name: str,
+            path_prefix: str = None,
+            aws_access_key_id: str = None,
+            aws_secret_key: str = None,
+            aws_default_region: str = None,
+            trim_website: bool = False,
+            allow_forwarding: bool = True,
     ):
 
         self.aws_access_key_id = os.getenv("AWS_ACCESS_KEY_ID", aws_access_key_id)
@@ -57,6 +58,7 @@ class S3WebCache(object):
         self.trim_website = trim_website
         # self.s3_connection = boto3.resource("s3")
         self.allow_forwarding = allow_forwarding
+        self.user_agent = UserAgent().ie
 
     def get(self, _url):
         """
@@ -85,7 +87,7 @@ class S3WebCache(object):
         """
         _url_parsed = urlparse(_url)
         prefixed_s3_path = _url_parsed.path
-        
+
         query = _url_parsed.query
         if self.path_prefix:
             prefixed_s3_path = posixpath.normpath(
@@ -98,13 +100,15 @@ class S3WebCache(object):
                 posixpath.join("/" + hostname, "." + prefixed_s3_path)
             )
 
-        s3_path = ("s3", self.bucket, prefixed_s3_path, "" , query, "")
+        s3_path = ("s3", self.bucket, prefixed_s3_path, "", query, "")
         return urlparse(urlunparse(s3_path))
 
     def _put_to_s3(self, s3_url_tuple, page_body):
         try:
+            path = s3_url_tuple.path[1:]
+            query = s3_url_tuple.query
             self._s3_client.put_object(
-                Bucket=self.bucket, Key=f'{s3_url_tuple.path[1:]}?{s3_url_tuple.query}', Body=page_body.encode()
+                Bucket=self.bucket, Key=f'{path}?{query}', Body=page_body.encode()
             )
         except Exception as err:
             print(
@@ -125,15 +129,16 @@ class S3WebCache(object):
             )
 
     def _get_from_url(self, _url):
-        r = requests.get(_url, allow_redirects=self.allow_forwarding)
+        headers = {'User-Agent': self.user_agent}
+        r = requests.get(_url, allow_redirects=self.allow_forwarding, headers=headers, timeout=3.0)
 
         attempts = 0
-        print(r.__dict__)
+
         while r.status_code != 200 and attempts < 3:
             try:
                 r = requests.get(_url, allow_redirects=False)
             except Exception as err:
-                print(err)
+                pass
             finally:
                 attempts += 1
                 sleep(10 + (attempts * 10))
